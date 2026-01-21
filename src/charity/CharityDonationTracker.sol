@@ -9,6 +9,7 @@ contract CharityDonationTracker {
         uint256 id;
         string name;
         address charityAddress;
+        address creator;
         uint256 totalDonated;
         bool active;
     }
@@ -60,13 +61,14 @@ contract CharityDonationTracker {
         campaignCount = 0;
     }
 
-    function createCampaign(string memory _name, address _charityAddress) external onlyAdmin {
+    function createCampaign(string memory _name, address _charityAddress) external {
         require(_charityAddress != address(0), "Invalid charity address");
         campaignCount++;
         campaigns[campaignCount] = Campaign({
             id: campaignCount,
             name: _name,
             charityAddress: _charityAddress,
+            creator: msg.sender,
             totalDonated: 0,
             active: true
         });
@@ -99,7 +101,8 @@ contract CharityDonationTracker {
         emit FundsWithdrawn(_campaignId, msg.sender, amount);
     }
 
-    function closeCampaign(uint256 _campaignId) external onlyAdmin validCampaign(_campaignId) {
+    function closeCampaign(uint256 _campaignId) external validCampaign(_campaignId) {
+        require(msg.sender == campaigns[_campaignId].creator, "Only creator can close");
         campaigns[_campaignId].active = false;
         emit CampaignClosed(_campaignId);
     }

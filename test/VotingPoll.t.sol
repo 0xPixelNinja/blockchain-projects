@@ -2,16 +2,17 @@
 pragma solidity ^0.8.33;
 
 import "forge-std/Test.sol";
-import "../src/voting/DecentralizedVoting.sol";
+import "../src/voting/VotingPoll.sol";
 
-contract DecentralizedVotingTest is Test {
-    DecentralizedVoting voting;
+contract VotingPollTest is Test {
+    VotingPoll voting;
     address admin = address(this);
     address voter1 = address(0x1);
     address voter2 = address(0x2);
 
     function setUp() public {
-        voting = new DecentralizedVoting();
+        voting = new VotingPoll();
+        voting.initialize(admin, "Test Poll", false); // Initialize as private poll
     }
 
     function testAdminIsDeployer() public view {
@@ -24,7 +25,7 @@ contract DecentralizedVotingTest is Test {
         
         assertEq(voting.candidateCount(), 2);
         
-        DecentralizedVoting.Candidate memory c1 = voting.getCandidate(1);
+        VotingPoll.Candidate memory c1 = voting.getCandidate(1);
         assertEq(c1.name, "Alice");
         assertEq(c1.voteCount, 0);
     }
@@ -53,7 +54,7 @@ contract DecentralizedVotingTest is Test {
 
         assertTrue(voting.hasVoted(voter1));
         
-        DecentralizedVoting.Candidate memory c1 = voting.getCandidate(1);
+        VotingPoll.Candidate memory c1 = voting.getCandidate(1);
         assertEq(c1.voteCount, 1);
     }
 

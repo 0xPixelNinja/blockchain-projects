@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.33;
 
-contract DecentralizedVoting {
+contract VotingPoll {
     address public admin;
+    string public title;
     uint256 public votingEndTime;
     uint256 public candidateCount;
     bool public votingActive;
+    bool public isPublic;
+    bool private initialized;
 
     struct Candidate {
         uint256 id;
@@ -33,15 +36,6 @@ contract DecentralizedVoting {
         require(msg.sender == admin, "Only admin can call this");
     }
 
-    modifier onlyWhitelisted() {
-        _onlyWhitelisted();
-        _;
-    }
-
-    function _onlyWhitelisted() internal view {
-        require(whitelistedVoters[msg.sender], "Voter not whitelisted");
-    }
-
     modifier votingOpen() {
         _votingOpen();
         _;
@@ -51,8 +45,12 @@ contract DecentralizedVoting {
         require(votingActive && block.timestamp < votingEndTime, "Voting not active");
     }
 
-    constructor() {
-        admin = msg.sender;
+    function initialize(address _admin, string memory _title, bool _isPublic) external {
+        require(!initialized, "Already initialized");
+        initialized = true;
+        admin = _admin;
+        title = _title;
+        isPublic = _isPublic;
         votingActive = false;
         candidateCount = 0;
     }
@@ -79,8 +77,13 @@ contract DecentralizedVoting {
         emit VotingStarted(votingEndTime);
     }
 
-    function vote(uint256 _candidateId) external onlyWhitelisted votingOpen {
+    function vote(uint256 _candidateId) external votingOpen {
         require(!voters[msg.sender], "Already voted");
+        
+        if (!isPublic) {
+            require(whitelistedVoters[msg.sender], "Voter not whitelisted");
+        }
+        
         require(_candidateId > 0 && _candidateId <= candidateCount, "Invalid candidate");
 
         voters[msg.sender] = true;
