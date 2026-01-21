@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ChainGov - Decentralized Governance Platform",
-  description: "Transparent voting and charitable donations powered by blockchain technology",
+  title: "blocklab",
+  description: "Blockchain projects on Ethereum",
 };
 
 export default function RootLayout({

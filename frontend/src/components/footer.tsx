@@ -7,10 +7,10 @@ export function Footer() {
   const chain = config.chains[0];
   
   return (
-    <footer className="border-t bg-muted/30">
-      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4 px-4 py-6">
+    <footer className="border-t">
+      <div className="mx-auto max-w-4xl flex flex-col md:flex-row items-center justify-between gap-4 px-4 py-4">
         <p className="text-sm text-muted-foreground">
-          Built on {chain.name} {chain.testnet ? "Testnet" : ""}
+          {chain.name} {chain.testnet ? "(testnet)" : ""}
         </p>
         <div className="flex items-center gap-4">
           {chain.blockExplorers?.default && (

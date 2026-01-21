@@ -151,6 +151,7 @@ function PollInterface({ pollAddress, onBack }: { pollAddress: `0x${string}`, on
   const [searchQuery, setSearchQuery] = useState("");
   const [addCandidateOpen, setAddCandidateOpen] = useState(false);
   const [whitelistOpen, setWhitelistOpen] = useState(false);
+  const [votingForId, setVotingForId] = useState<bigint | null>(null);
   const prevIsSuccess = useRef(false);
 
   const { data: title } = useReadContract({
@@ -249,6 +250,7 @@ function PollInterface({ pollAddress, onBack }: { pollAddress: `0x${string}`, on
         setDuration("");
         setAddCandidateOpen(false);
         setWhitelistOpen(false);
+        setVotingForId(null);
       });
       refetchAll();
       reset();
@@ -347,6 +349,7 @@ function PollInterface({ pollAddress, onBack }: { pollAddress: `0x${string}`, on
   };
 
   const handleVote = (candidateId: bigint) => {
+    setVotingForId(candidateId);
     writeContract({
       address: pollAddress,
       abi: VOTING_POLL_ABI,
@@ -758,10 +761,10 @@ function PollInterface({ pollAddress, onBack }: { pollAddress: `0x${string}`, on
                               !votingActive ||
                               !canVote ||
                               hasVoted ||
-                              isLoading
+                              votingForId !== null
                             }
                           >
-                            {isLoading ? (
+                            {votingForId === candidate.id && isLoading ? (
                               <Loader2 className="h-4 w-4 animate-spin" />
                             ) : (
                               "Vote"
@@ -951,9 +954,9 @@ export function VotingPanel() {
                                     onCheckedChange={setIsPublic}
                                 />
                             </div>
-                            <Button className="w-full" onClick={handleCreatePoll} disabled={isPending || !title.trim()}>
-                                {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                Create Poll
+                            <Button className="w-full" onClick={handleCreatePoll} disabled={isPending || isConfirming || !title.trim()}>
+                                {(isPending || isConfirming) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                {isConfirming ? "Confirming..." : "Create Poll"}
                             </Button>
                         </div>
                     </DialogContent>
