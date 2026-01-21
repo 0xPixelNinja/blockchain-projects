@@ -1,0 +1,14 @@
+{
+  "name": "blockchain-monorepo",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "contracts"
+  ],
+  "scripts": {
+    "frontend:dev": "npm run dev --workspace=frontend",
+    "frontend:build": "npm run build --workspace=frontend",
+    "contracts:test": "cd contracts && forge test",
+    "contracts:build": "cd contracts && forge build"
+  }
+}

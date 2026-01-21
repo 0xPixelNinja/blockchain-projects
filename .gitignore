@@ -1,4 +1,25 @@
-cache/
-out/
-.env
-broadcast/
+# Foundry
+contracts/cache/
+contracts/out/
+contracts/broadcast/
+contracts/.env
+contracts/foundry.lock
+
+# Next.js / Node
+node_modules/
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.env*
+frontend/tsconfig.tsbuildinfo
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# IDEs and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
