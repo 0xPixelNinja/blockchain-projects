@@ -61,13 +61,10 @@ export function Navbar() {
         
         {/* LEFT: Brand */}
         <Link href="/" className="flex items-center gap-2 group no-underline">
-          <div className="w-7 h-7 bg-slate-900 border border-slate-700 flex items-center justify-center group-hover:border-emerald-500 transition-colors">
-            <Terminal size={14} className="text-emerald-500" />
+          <div className="w-7 h-7 bg-blue-600 flex items-center justify-center">
+            <Terminal size={14} className="text-white" />
           </div>
-          <div className="hidden sm:block">
-            <div className="text-sm font-black text-white tracking-wider">BLACKBOX</div>
-            <div className="text-[8px] text-slate-500 tracking-widest -mt-0.5">SYSTEMS</div>
-          </div>
+          <span className="text-sm font-bold text-white tracking-wide">BlockLearn</span>
         </Link>
 
         {/* RIGHT: Date + Wallet */}
