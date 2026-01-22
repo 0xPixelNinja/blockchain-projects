@@ -1,16 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { useState, useEffect } from "react";
+import { useWriteContract, useWaitForTransactionReceipt, useAccount } from "wagmi";
 import { CHARITY_ABI, CHARITY_ADDRESS } from "@/lib/contracts";
 import { X, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { isAddress } from "viem";
 
 export function CreateCampaignModal({ onClose }: { onClose: () => void }) {
+  const { address } = useAccount();
   const [name, setName] = useState("");
   const [charityAddress, setCharityAddress] = useState("");
   const router = useRouter();
+
+  // Auto-fill beneficiary address if wallet is connected
+  useEffect(() => {
+    if (address && !charityAddress) {
+      setCharityAddress(address);
+    }
+  }, [address, charityAddress]);
 
   const { data: hash, writeContract, isPending } = useWriteContract();
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
@@ -29,10 +37,12 @@ export function CreateCampaignModal({ onClose }: { onClose: () => void }) {
     });
   };
 
-  if (isSuccess) {
-    onClose();
-    router.refresh(); 
-  }
+  useEffect(() => {
+    if (isSuccess) {
+      onClose();
+      router.refresh();
+    }
+  }, [isSuccess, onClose, router]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">

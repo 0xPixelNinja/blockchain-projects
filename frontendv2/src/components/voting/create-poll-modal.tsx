@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { VOTING_FACTORY_ABI, VOTING_FACTORY_ADDRESS } from "@/lib/contracts";
 import { X, Loader2 } from "lucide-react";
@@ -28,10 +28,12 @@ export function CreatePollModal({ onClose }: { onClose: () => void }) {
     });
   };
 
-  if (isSuccess) {
-    onClose();
-    router.refresh(); 
-  }
+  useEffect(() => {
+    if (isSuccess) {
+      onClose();
+      router.refresh();
+    }
+  }, [isSuccess, onClose, router]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">

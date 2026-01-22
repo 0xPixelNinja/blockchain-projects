@@ -2,7 +2,7 @@
 
 import { useReadContract, useWriteContract, useWaitForTransactionReceipt, useAccount } from "wagmi";
 import { CHARITY_ABI, CHARITY_ADDRESS } from "@/lib/contracts";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader2, Heart, Download, Wallet, ArrowRight, History, ShieldCheck } from "lucide-react";
 import { formatEther, parseEther } from "viem";
 import { useRouter } from "next/navigation";
@@ -20,7 +20,7 @@ export function CampaignDetail({ id }: { id: number }) {
     args: [BigInt(id)],
   });
 
-  const { data: donationCount } = useReadContract({
+  const { data: donationCount, refetch: refetchDonationCount } = useReadContract({
     address: CHARITY_ADDRESS,
     abi: CHARITY_ABI,
     functionName: "getCampaignDonationCount",
@@ -58,10 +58,13 @@ export function CampaignDetail({ id }: { id: number }) {
   const isInteractionPending = isDonating || isDonateConfirming || isWithdrawing || isWithdrawConfirming;
   const isCharityOwner = userAddress && campaign && userAddress.toLowerCase() === campaign.charityAddress.toLowerCase();
 
-  if (isDonateSuccess || isWithdrawSuccess) {
-     refetchCampaign();
-     router.refresh();
-  }
+  useEffect(() => {
+    if (isDonateSuccess || isWithdrawSuccess) {
+      refetchCampaign();
+      refetchDonationCount();
+      router.refresh();
+    }
+  }, [isDonateSuccess, isWithdrawSuccess, refetchCampaign, refetchDonationCount, router]);
 
   if (!campaign) {
       return (
