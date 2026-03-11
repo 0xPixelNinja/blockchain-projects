@@ -5,6 +5,7 @@ import "forge-std/Script.sol";
 import "../src/charity/CharityDonationTracker.sol";
 import "../src/voting/VotingPoll.sol";
 import "../src/voting/VotingFactory.sol";
+import "../src/token/TokenFactory.sol";
 
 contract DeployPlatform is Script {
     function run() external {
@@ -23,6 +24,10 @@ contract DeployPlatform is Script {
         // 3. Deploy Voting Factory
         VotingFactory factory = new VotingFactory(address(votingLogic));
         console.log("VotingFactory deployed at:", address(factory));
+        
+        // 4. Deploy Token Factory
+        TokenFactory tokenFactory = new TokenFactory();
+        console.log("TokenFactory deployed at:", address(tokenFactory));
         
         vm.stopBroadcast();
     }

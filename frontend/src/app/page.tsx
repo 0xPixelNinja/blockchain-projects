@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Activity, Server } from "lucide-react";
+import { Activity, Server, Coins } from "lucide-react";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -34,6 +34,17 @@ export default function Home() {
       accent: "text-emerald-500",
       icon: <Activity className="w-6 h-6" />,
       href: "/charity",
+    },
+    {
+      id: "token",
+      name: "TOKEN_FORGE",
+      ticker: "MINT",
+      sector: "ERC-20 FACTORY",
+      tps: "PERMISSIONLESS",
+      status: "ACTIVE",
+      accent: "text-amber-500",
+      icon: <Coins className="w-6 h-6" />,
+      href: "/token",
     },
   ];
 
