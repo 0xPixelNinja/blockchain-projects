@@ -1,36 +1,43 @@
-"use client";
-
-import { Github } from "lucide-react";
-import { config } from "@/lib/wagmi";
+import { Terminal } from "lucide-react";
+import Link from "next/link";
 
 export function Footer() {
-  const chain = config.chains[0];
-  
   return (
-    <footer className="border-t">
-      <div className="mx-auto max-w-4xl flex flex-col md:flex-row items-center justify-between gap-4 px-4 py-4">
-        <p className="text-sm text-muted-foreground">
-          {chain.name} {chain.testnet ? "(testnet)" : ""}
-        </p>
-        <div className="flex items-center gap-4">
-          {chain.blockExplorers?.default && (
+    <footer className="w-full bg-[#050505] border-t border-slate-800 mt-auto">
+      <div className="max-w-7xl mx-auto px-6 sm:px-12 py-8">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
+          {/* Brand */}
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-blue-600 flex items-center justify-center">
+              <Terminal size={12} className="text-white" />
+            </div>
+            <span className="text-sm font-bold text-white">BlockLearn</span>
+          </Link>
+
+          {/* Links */}
+          <div className="flex items-center gap-6 text-sm text-slate-500">
             <a
-              href={chain.blockExplorers.default.url}
+              href="https://github.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="hover:text-white transition-colors"
             >
-              {chain.blockExplorers.default.name}
+              GitHub
             </a>
-          )}
-          <a
-            href="https://github.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <Github className="h-4 w-4" />
-          </a>
+            <a
+              href="https://sepolia.etherscan.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition-colors"
+            >
+              Etherscan
+            </a>
+          </div>
+        </div>
+
+        {/* Copyright */}
+        <div className="mt-6 pt-6 border-t border-slate-800 text-center text-xs text-slate-600">
+          Built for learning. Deployed on Sepolia Testnet.
         </div>
       </div>
     </footer>
