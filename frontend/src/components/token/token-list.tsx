@@ -1,23 +1,37 @@
 "use client";
 
-import { useReadContract, useReadContracts } from "wagmi";
+import { useReadContract, useReadContracts, useAccount } from "wagmi";
 import { TOKEN_FACTORY_ABI, TOKEN_FACTORY_ADDRESS, TOKEN_TEMPLATE_ABI } from "@/lib/contracts";
 import { Coins } from "lucide-react";
 import { formatUnits } from "viem";
+import Link from "next/link";
 
-export function TokenList() {
-  const { data: tokenAddresses, isLoading } = useReadContract({
+export function TokenList({ showMyTokens }: { showMyTokens?: boolean }) {
+  const { address: userAddress } = useAccount();
+
+  const { data: allTokens, isLoading: loadingAll } = useReadContract({
     address: TOKEN_FACTORY_ADDRESS,
     abi: TOKEN_FACTORY_ABI,
     functionName: "getDeployedTokens",
   });
+
+  const { data: myTokens, isLoading: loadingMy } = useReadContract({
+    address: TOKEN_FACTORY_ADDRESS,
+    abi: TOKEN_FACTORY_ABI,
+    functionName: "getTokensByCreator",
+    args: userAddress ? [userAddress] : undefined,
+    query: { enabled: !!showMyTokens && !!userAddress },
+  });
+
+  const isLoading = showMyTokens ? loadingMy : loadingAll;
+  const tokenAddresses = showMyTokens ? myTokens : allTokens;
 
   if (isLoading) {
     return <div className="animate-pulse text-xs font-mono text-slate-500">SCANNING_REGISTRY...</div>;
   }
 
   if (!tokenAddresses || tokenAddresses.length === 0) {
-    return <div className="text-slate-500 font-mono text-xs">NO_TOKENS_DEPLOYED_YET</div>;
+    return <div className="text-slate-500 font-mono text-xs">{showMyTokens ? "NO_TOKENS_CREATED_BY_YOU" : "NO_TOKENS_DEPLOYED_YET"}</div>;
   }
 
   return (
@@ -51,7 +65,10 @@ function TokenCard({ address }: { address: `0x${string}` }) {
   const truncate = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 
   return (
-    <div className="group bg-[#0a0a0f] border-2 border-slate-800 p-6 hover:border-amber-500 transition-none duration-0 flex flex-col justify-between">
+    <Link
+      href={`/token/${address}`}
+      className="group bg-[#0a0a0f] border-2 border-slate-800 p-6 hover:border-amber-500 transition-none duration-0 flex flex-col justify-between no-underline"
+    >
       <div>
         <div className="flex justify-between items-start mb-4">
           <div className="p-2 bg-slate-900 text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-colors">
@@ -69,14 +86,9 @@ function TokenCard({ address }: { address: `0x${string}` }) {
         <div className="text-xs font-mono text-slate-400 mb-1">
           Creator: {creator ? truncate(creator) : "..."}
         </div>
-        <a
-          href={`https://sepolia.etherscan.io/address/${address}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[10px] font-mono text-amber-600 hover:text-amber-400 break-all"
-        >
+        <div className="text-[10px] font-mono text-amber-600 break-all">
           {truncate(address)}
-        </a>
+        </div>
       </div>
 
       <div className="bg-slate-900/50 border border-slate-800 p-3 mt-4">
@@ -86,6 +98,6 @@ function TokenCard({ address }: { address: `0x${string}` }) {
           <span className="text-xs text-amber-500">{symbol || "???"}</span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

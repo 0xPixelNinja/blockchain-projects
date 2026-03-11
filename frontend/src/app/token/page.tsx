@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { TokenList } from "@/components/token/token-list";
 import { CreateTokenModal } from "@/components/token/create-token-modal";
-import { Plus, Coins } from "lucide-react";
-import { useReadContract } from "wagmi";
+import { Plus, Coins, User, Globe } from "lucide-react";
+import { useReadContract, useAccount } from "wagmi";
 import { TOKEN_FACTORY_ABI, TOKEN_FACTORY_ADDRESS } from "@/lib/contracts";
 
 export default function TokenPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showMyTokens, setShowMyTokens] = useState(false);
+  const { isConnected } = useAccount();
 
   const { data: tokenCount } = useReadContract({
     address: TOKEN_FACTORY_ADDRESS,
@@ -58,8 +60,36 @@ export default function TokenPage() {
         </div>
       </div>
 
+      {/* Filter Toggle */}
+      {isConnected && (
+        <div className="flex items-center gap-2 mb-6">
+          <button
+            onClick={() => setShowMyTokens(false)}
+            className={`flex items-center gap-1.5 px-4 py-2 text-[10px] font-bold tracking-widest uppercase border transition-colors ${
+              !showMyTokens
+                ? "border-amber-500 bg-amber-900/20 text-amber-500"
+                : "border-slate-800 text-slate-500 hover:text-white hover:border-slate-600"
+            }`}
+          >
+            <Globe size={12} />
+            All Tokens
+          </button>
+          <button
+            onClick={() => setShowMyTokens(true)}
+            className={`flex items-center gap-1.5 px-4 py-2 text-[10px] font-bold tracking-widest uppercase border transition-colors ${
+              showMyTokens
+                ? "border-amber-500 bg-amber-900/20 text-amber-500"
+                : "border-slate-800 text-slate-500 hover:text-white hover:border-slate-600"
+            }`}
+          >
+            <User size={12} />
+            My Tokens
+          </button>
+        </div>
+      )}
+
       {/* List */}
-      <TokenList />
+      <TokenList showMyTokens={showMyTokens} />
 
       {/* Modal */}
       {isModalOpen && <CreateTokenModal onClose={() => setIsModalOpen(false)} />}
