@@ -8,6 +8,7 @@ import "../src/voting/VotingFactory.sol";
 import "../src/token/TokenFactory.sol";
 import "../src/certificate/CertificateRegistry.sol";
 import "../src/logitrack/LogiTrack.sol";
+import "../src/landregistry/LandRegistry.sol";
 
 contract DeployPlatform is Script {
     function run() external {
@@ -38,6 +39,10 @@ contract DeployPlatform is Script {
         // 6. Deploy LogiTrack
         LogiTrack logitrack = new LogiTrack();
         console.log("LogiTrack deployed at:", address(logitrack));
+
+        // 7. Deploy LandRegistry
+        LandRegistry landRegistry = new LandRegistry();
+        console.log("LandRegistry deployed at:", address(landRegistry));
         
         vm.stopBroadcast();
     }

@@ -1,9 +1,10 @@
 // NOTE: Update these addresses after deployment
-export const VOTING_FACTORY_ADDRESS = "0x79EeD8c357b433583d7BecFC21670CDf37D60138" as const;
-export const CHARITY_ADDRESS = "0x22Ae8dfbf5852D85E60Ac35f64Eda9a5555933E2" as const;
-export const TOKEN_FACTORY_ADDRESS = "0x5389Eba86740c16e0f9C2897874b2c691Bfba7E9" as const;
-export const CERTIFICATE_ADDRESS = "0xa0d7D1c52492DFB299F3366d1B96A5dAAeB20a61" as const;
-export const LOGITRACK_ADDRESS = "0x1D9Fa0aD3D9D05EfC49c39Ca336523603CfEa1bb" as const;
+export const VOTING_FACTORY_ADDRESS = "0x842E630956B9A369346e961b12026386492cAE76" as const;
+export const CHARITY_ADDRESS = "0xbd99952b3B0AF290d2f45Ce019F60D596571A916" as const;
+export const TOKEN_FACTORY_ADDRESS = "0x35f319D50B887Da330dDD54163EB68F3f2a6a671" as const;
+export const CERTIFICATE_ADDRESS = "0x9678d6e8Bb0B0445487f5E423C733CFee7d76E5c" as const;
+export const LOGITRACK_ADDRESS = "0xa2c8304Ee9501226A684707f64e4E3b06941Dae2" as const;
+export const LAND_REGISTRY_ADDRESS = "0x07EbB4BC1414467b8230207A486Ee43D6D782cCa" as const;
 
 export const VOTING_FACTORY_ABI = [
   {
@@ -814,6 +815,150 @@ export const LOGITRACK_ABI = [
     inputs: [],
     name: "START_ID",
     outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+] as const;
+
+export const LAND_REGISTRY_ABI = [
+  {
+    inputs: [],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: "landId", type: "uint256" },
+      { indexed: false, name: "location", type: "string" },
+      { indexed: true, name: "owner", type: "address" },
+      { indexed: false, name: "deedCID", type: "string" },
+    ],
+    name: "LandRegistered",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: "landId", type: "uint256" },
+      { indexed: true, name: "previousOwner", type: "address" },
+      { indexed: true, name: "newOwner", type: "address" },
+      { indexed: false, name: "deedCID", type: "string" },
+      { indexed: false, name: "note", type: "string" },
+    ],
+    name: "OwnershipTransferred",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: "landId", type: "uint256" },
+      { indexed: false, name: "oldLocation", type: "string" },
+      { indexed: false, name: "newLocation", type: "string" },
+    ],
+    name: "LocationUpdated",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "registrar",
+    outputs: [{ name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "landCount",
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { name: "_landId", type: "uint256" },
+      { name: "_location", type: "string" },
+      { name: "_owner", type: "address" },
+      { name: "_deedCID", type: "string" },
+    ],
+    name: "registerLand",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { name: "_landId", type: "uint256" },
+      { name: "_newOwner", type: "address" },
+      { name: "_newDeedCID", type: "string" },
+      { name: "_note", type: "string" },
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { name: "_landId", type: "uint256" },
+      { name: "_newLocation", type: "string" },
+    ],
+    name: "updateLocation",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ name: "_landId", type: "uint256" }],
+    name: "getLand",
+    outputs: [
+      {
+        components: [
+          { name: "landId", type: "uint256" },
+          { name: "location", type: "string" },
+          { name: "currentOwner", type: "address" },
+          { name: "deedCID", type: "string" },
+          { name: "registeredAt", type: "uint256" },
+          { name: "updatedAt", type: "uint256" },
+        ],
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ name: "_landId", type: "uint256" }],
+    name: "getOwnershipHistory",
+    outputs: [
+      {
+        components: [
+          { name: "owner", type: "address" },
+          { name: "deedCID", type: "string" },
+          { name: "timestamp", type: "uint256" },
+          { name: "note", type: "string" },
+        ],
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ name: "_owner", type: "address" }],
+    name: "getLandsByOwner",
+    outputs: [{ name: "", type: "uint256[]" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { name: "_landId", type: "uint256" },
+      { name: "_cid", type: "string" },
+    ],
+    name: "verifyDeed",
+    outputs: [{ name: "", type: "bool" }],
     stateMutability: "view",
     type: "function",
   },

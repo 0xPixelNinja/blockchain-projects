@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Activity, Server, Coins, Award, Package } from "lucide-react";
+import { Activity, Server, Coins, Award, Package, Landmark } from "lucide-react";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -67,6 +67,17 @@ export default function Home() {
       accent: "text-orange-500",
       icon: <Package className="w-6 h-6" />,
       href: "/logitrack",
+    },
+    {
+      id: "ledgeland",
+      name: "LEDGE_LAND",
+      ticker: "LAND",
+      sector: "LAND REGISTRY",
+      tps: "EXCEL + IPFS",
+      status: "ACTIVE",
+      accent: "text-rose-500",
+      icon: <Landmark className="w-6 h-6" />,
+      href: "/ledgeland",
     },
   ];
 

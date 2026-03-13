@@ -2,14 +2,16 @@
 
 A collection of smart contract projects built on Ethereum as a hands-on approach to learning Solidity, contract design patterns, and full-stack dApp development. Each project is deployed on the Sepolia testnet with a shared Next.js frontend.
 
-This repository currently contains four projects. More will be added over time.
+This repository contains six projects spanning donations, governance, token creation, credential verification, supply chain tracking, and land ownership.
 
-| Project | Description | Documentation |
-|---------|-------------|---------------|
-| Charity Donation Tracker | On-chain donation campaigns with transparent fund tracking | [docs/CHARITY.md](docs/CHARITY.md) |
-| Token Factory | Permissionless ERC-20 token deployment | [docs/TOKEN.md](docs/TOKEN.md) |
-| Voting System | Public and private governance polls using minimal proxy clones | [docs/VOTING.md](docs/VOTING.md) |
-| Certificate Registry | Conference certificate issuance and verification via IPFS + blockchain | [docs/CERTIFICATE.md](docs/CERTIFICATE.md) |
+| # | Project | Description | Documentation |
+|---|---------|-------------|---------------|
+| 1 | Charity Donation Tracker | On-chain donation campaigns with transparent fund tracking | [docs/CHARITY.md](docs/CHARITY.md) |
+| 2 | Voting System | Public and private governance polls using minimal proxy clones | [docs/VOTING.md](docs/VOTING.md) |
+| 3 | Token Factory | Permissionless ERC-20 token deployment | [docs/TOKEN.md](docs/TOKEN.md) |
+| 4 | Certificate Registry | Conference certificate issuance and verification via IPFS + blockchain | [docs/CERTIFICATE.md](docs/CERTIFICATE.md) |
+| 5 | LogiTrack | Supply chain provenance ledger with shipment tracking and IPFS quality docs | [docs/LOGITRACK.md](docs/LOGITRACK.md) |
+| 6 | LedgeLand Registry | Land ownership ledger with chain-of-custody history and deed verification | [docs/LEDGELAND.md](docs/LEDGELAND.md) |
 
 ---
 
@@ -22,14 +24,16 @@ blockchain-projects/
 │   │   ├── charity/          # CharityDonationTracker.sol
 │   │   ├── certificate/      # CertificateRegistry.sol
 │   │   ├── token/            # TokenFactory.sol, TokenTemplate.sol
-│   │   └── voting/           # VotingFactory.sol, VotingPoll.sol
+│   │   ├── voting/           # VotingFactory.sol, VotingPoll.sol
+│   │   ├── logitrack/        # LogiTrack.sol
+│   │   └── landregistry/     # LandRegistry.sol
 │   ├── script/               # Deployment scripts
 │   ├── test/                 # Forge tests
 │   ├── lib/                  # Dependencies (forge-std, OpenZeppelin)
 │   └── foundry.toml
 ├── frontend/                 # Next.js 16 application
 │   ├── src/
-│   │   ├── app/              # Pages (charity, certificate, token, voting)
+│   │   ├── app/              # Pages (charity, certificate, token, voting, logitrack, ledgeland)
 │   │   ├── components/       # UI components per project
 │   │   └── lib/              # Contract ABIs, wagmi config
 │   └── package.json
@@ -37,7 +41,9 @@ blockchain-projects/
     ├── CHARITY.md
     ├── CERTIFICATE.md
     ├── TOKEN.md
-    └── VOTING.md
+    ├── VOTING.md
+    ├── LOGITRACK.md
+    └── LEDGELAND.md
 ```
 
 ## Tech Stack
@@ -59,7 +65,8 @@ blockchain-projects/
 
 **External Services**
 
-- Pinata (IPFS pinning for the Certificate Registry)
+- Pinata (IPFS pinning for Certificate Registry, LogiTrack, and LedgeLand)
+- SheetJS (client-side Excel parsing for LogiTrack and LedgeLand bulk imports)
 
 ## Deployed Contracts (Sepolia)
 
@@ -70,6 +77,8 @@ blockchain-projects/
 | VotingFactory | `0x79EeD8c357b433583d7BecFC21670CDf37D60138` |
 | TokenFactory | `0x5389Eba86740c16e0f9C2897874b2c691Bfba7E9` |
 | CertificateRegistry | `0xa0d7D1c52492DFB299F3366d1B96A5dAAeB20a61` |
+| LogiTrack | `0x1D9Fa0aD3D9D05EfC49c39Ca336523603CfEa1bb` |
+| LandRegistry | `0xf229700dCdF524945B9558f257bb1E2b726B7d93` |
 
 All contracts can be verified and interacted with on [Sepolia Etherscan](https://sepolia.etherscan.io).
 
@@ -118,6 +127,8 @@ source .env
 source .env && forge script script/DeployCharity.s.sol --rpc-url sepolia --broadcast --verify
 source .env && forge script script/DeployCertificate.s.sol --rpc-url sepolia --broadcast --verify
 source .env && forge script script/DeployToken.s.sol --rpc-url sepolia --broadcast --verify
+source .env && forge script script/DeployLogistics.s.sol --rpc-url sepolia --broadcast --verify
+source .env && forge script script/DeployLandRegistry.s.sol --rpc-url sepolia --broadcast --verify
 
 # Deploy the full platform (all contracts)
 source .env && forge script script/DeployPlatform.s.sol --rpc-url sepolia --broadcast --verify
@@ -137,7 +148,7 @@ npm run dev
 
 The app runs at `http://localhost:3000`. Connect your wallet to interact with the deployed contracts on Sepolia.
 
-The Certificate Registry requires a Pinata account for IPFS uploads. Create a `frontend/.env.local` file:
+The Certificate Registry, LogiTrack, and LedgeLand require a Pinata account for IPFS uploads. Create a `frontend/.env.local` file:
 
 ```
 PINATA_JWT=<your_pinata_jwt_token>
@@ -151,16 +162,20 @@ Each project has its own test suite under `contracts/test/`:
 | Test File | Tests | Covers |
 |-----------|-------|--------|
 | CharityDonationTracker.t.sol | 8 | Campaign creation, donations, withdrawals, access control |
-| CertificateRegistry.t.sol | 11 | Certificate issuance, sequential IDs, verification, access guards |
-| TokenFactory.t.sol | 8 | Token deployment, supply distribution, registry queries |
 | VotingPoll.t.sol | 8 | Poll lifecycle, voting, whitelisting, winner calculation |
+| TokenFactory.t.sol | 8 | Token deployment, supply distribution, registry queries |
+| CertificateRegistry.t.sol | 11 | Certificate issuance, sequential IDs, verification, access guards |
+| LogiTrack.t.sol | 18 | Product registration, tracking updates, history, access control, events |
+| LandRegistry.t.sol | 24 | Land registration, ownership transfers, location updates, deed verification, events |
+
+**77 tests total, all passing.**
 
 ```bash
 # Run all tests
 forge test
 
 # Run a specific test file
-forge test --match-path test/CharityDonationTracker.t.sol -vvv
+forge test --match-path test/LandRegistry.t.sol -vvv
 ```
 
 ## License
