@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Activity, Server, Coins, Award } from "lucide-react";
+import { Activity, Server, Coins, Award, Package } from "lucide-react";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -56,6 +56,17 @@ export default function Home() {
       accent: "text-violet-500",
       icon: <Award className="w-6 h-6" />,
       href: "/certificate",
+    },
+    {
+      id: "logitrack",
+      name: "LOGI_TRACK",
+      ticker: "TRACK",
+      sector: "SUPPLY CHAIN",
+      tps: "EXCEL + ON-CHAIN",
+      status: "ACTIVE",
+      accent: "text-orange-500",
+      icon: <Package className="w-6 h-6" />,
+      href: "/logitrack",
     },
   ];
 

@@ -3,6 +3,7 @@ export const VOTING_FACTORY_ADDRESS = "0x79EeD8c357b433583d7BecFC21670CDf37D6013
 export const CHARITY_ADDRESS = "0x22Ae8dfbf5852D85E60Ac35f64Eda9a5555933E2" as const;
 export const TOKEN_FACTORY_ADDRESS = "0x5389Eba86740c16e0f9C2897874b2c691Bfba7E9" as const;
 export const CERTIFICATE_ADDRESS = "0xa0d7D1c52492DFB299F3366d1B96A5dAAeB20a61" as const;
+export const LOGITRACK_ADDRESS = "0x1D9Fa0aD3D9D05EfC49c39Ca336523603CfEa1bb" as const;
 
 export const VOTING_FACTORY_ABI = [
   {
@@ -678,6 +679,141 @@ export const CERTIFICATE_ABI = [
       { name: "issuer", type: "address" },
       { name: "issuedAt", type: "uint256" },
     ],
+    stateMutability: "view",
+    type: "function",
+  },
+] as const;
+
+export const LOGITRACK_ABI = [
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: "id", type: "uint256" },
+      { indexed: false, name: "productName", type: "string" },
+      { indexed: false, name: "origin", type: "string" },
+      { indexed: false, name: "qualityDocCID", type: "string" },
+      { indexed: true, name: "registrar", type: "address" },
+    ],
+    name: "ProductRegistered",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: "id", type: "uint256" },
+      { indexed: false, name: "status", type: "uint8" },
+      { indexed: false, name: "location", type: "string" },
+      { indexed: false, name: "note", type: "string" },
+      { indexed: true, name: "updatedBy", type: "address" },
+    ],
+    name: "TrackingUpdated",
+    type: "event",
+  },
+  {
+    inputs: [
+      { name: "_productName", type: "string" },
+      { name: "_origin", type: "string" },
+      { name: "_qualityDocCID", type: "string" },
+    ],
+    name: "registerProduct",
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { name: "_id", type: "uint256" },
+      { name: "_status", type: "uint8" },
+      { name: "_location", type: "string" },
+      { name: "_note", type: "string" },
+    ],
+    name: "updateTracking",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ name: "_id", type: "uint256" }],
+    name: "getProduct",
+    outputs: [
+      {
+        components: [
+          { name: "id", type: "uint256" },
+          { name: "productName", type: "string" },
+          { name: "origin", type: "string" },
+          { name: "qualityDocCID", type: "string" },
+          { name: "registrar", type: "address" },
+          { name: "registeredAt", type: "uint256" },
+        ],
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ name: "_id", type: "uint256" }],
+    name: "getTrackingState",
+    outputs: [
+      { name: "status", type: "uint8" },
+      { name: "location", type: "string" },
+      { name: "updatedAt", type: "uint256" },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ name: "_id", type: "uint256" }],
+    name: "getTrackingHistory",
+    outputs: [
+      {
+        components: [
+          { name: "status", type: "uint8" },
+          { name: "location", type: "string" },
+          { name: "note", type: "string" },
+          { name: "updatedBy", type: "address" },
+          { name: "updatedAt", type: "uint256" },
+        ],
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ name: "_registrar", type: "address" }],
+    name: "getProductsByRegistrar",
+    outputs: [{ name: "", type: "uint256[]" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ name: "_id", type: "uint256" }],
+    name: "verifyProduct",
+    outputs: [
+      { name: "exists", type: "bool" },
+      { name: "productName", type: "string" },
+      { name: "origin", type: "string" },
+      { name: "qualityDocCID", type: "string" },
+      { name: "registrar", type: "address" },
+      { name: "registeredAt", type: "uint256" },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "productCount",
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "START_ID",
+    outputs: [{ name: "", type: "uint256" }],
     stateMutability: "view",
     type: "function",
   },
