@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Activity, Server, Coins } from "lucide-react";
+import { Activity, Server, Coins, Award } from "lucide-react";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -45,6 +45,17 @@ export default function Home() {
       accent: "text-amber-500",
       icon: <Coins className="w-6 h-6" />,
       href: "/token",
+    },
+    {
+      id: "certificate",
+      name: "CONF_CERT",
+      ticker: "CERT",
+      sector: "CREDENTIAL REGISTRY",
+      tps: "IPFS + ON-CHAIN",
+      status: "ACTIVE",
+      accent: "text-violet-500",
+      icon: <Award className="w-6 h-6" />,
+      href: "/certificate",
     },
   ];
 

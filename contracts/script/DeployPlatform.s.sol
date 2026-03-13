@@ -6,6 +6,7 @@ import "../src/charity/CharityDonationTracker.sol";
 import "../src/voting/VotingPoll.sol";
 import "../src/voting/VotingFactory.sol";
 import "../src/token/TokenFactory.sol";
+import "../src/certificate/CertificateRegistry.sol";
 
 contract DeployPlatform is Script {
     function run() external {
@@ -28,6 +29,10 @@ contract DeployPlatform is Script {
         // 4. Deploy Token Factory
         TokenFactory tokenFactory = new TokenFactory();
         console.log("TokenFactory deployed at:", address(tokenFactory));
+        
+        // 5. Deploy Certificate Registry
+        CertificateRegistry certRegistry = new CertificateRegistry();
+        console.log("CertificateRegistry deployed at:", address(certRegistry));
         
         vm.stopBroadcast();
     }

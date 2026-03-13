@@ -2,13 +2,14 @@
 
 A collection of smart contract projects built on Ethereum as a hands-on approach to learning Solidity, contract design patterns, and full-stack dApp development. Each project is deployed on the Sepolia testnet with a shared Next.js frontend.
 
-This repository currently contains three projects. More will be added over time.
+This repository currently contains four projects. More will be added over time.
 
 | Project | Description | Documentation |
 |---------|-------------|---------------|
 | Charity Donation Tracker | On-chain donation campaigns with transparent fund tracking | [docs/CHARITY.md](docs/CHARITY.md) |
 | Token Factory | Permissionless ERC-20 token deployment | [docs/TOKEN.md](docs/TOKEN.md) |
 | Voting System | Public and private governance polls using minimal proxy clones | [docs/VOTING.md](docs/VOTING.md) |
+| Certificate Registry | Conference certificate issuance and verification via IPFS + blockchain | [docs/CERTIFICATE.md](docs/CERTIFICATE.md) |
 
 ---
 
@@ -19,6 +20,7 @@ blockchain-projects/
 ├── contracts/                # Foundry project (Solidity)
 │   ├── src/
 │   │   ├── charity/          # CharityDonationTracker.sol
+│   │   ├── certificate/      # CertificateRegistry.sol
 │   │   ├── token/            # TokenFactory.sol, TokenTemplate.sol
 │   │   └── voting/           # VotingFactory.sol, VotingPoll.sol
 │   ├── script/               # Deployment scripts
@@ -27,12 +29,13 @@ blockchain-projects/
 │   └── foundry.toml
 ├── frontend/                 # Next.js 16 application
 │   ├── src/
-│   │   ├── app/              # Pages (charity, token, voting)
+│   │   ├── app/              # Pages (charity, certificate, token, voting)
 │   │   ├── components/       # UI components per project
 │   │   └── lib/              # Contract ABIs, wagmi config
 │   └── package.json
 └── docs/                     # Per-project documentation
     ├── CHARITY.md
+    ├── CERTIFICATE.md
     ├── TOKEN.md
     └── VOTING.md
 ```
@@ -54,6 +57,10 @@ blockchain-projects/
 - TanStack React Query
 - Tailwind CSS v4
 
+**External Services**
+
+- Pinata (IPFS pinning for the Certificate Registry)
+
 ## Deployed Contracts (Sepolia)
 
 | Contract | Address |
@@ -62,6 +69,7 @@ blockchain-projects/
 | VotingPoll (Implementation) | `0x526463800aa0faf45cdb3023294b72748e9d67ac` |
 | VotingFactory | `0x79EeD8c357b433583d7BecFC21670CDf37D60138` |
 | TokenFactory | `0x5389Eba86740c16e0f9C2897874b2c691Bfba7E9` |
+| CertificateRegistry | `0xa0d7D1c52492DFB299F3366d1B96A5dAAeB20a61` |
 
 All contracts can be verified and interacted with on [Sepolia Etherscan](https://sepolia.etherscan.io).
 
@@ -100,17 +108,19 @@ SEPOLIA_RPC_URL=<your_sepolia_rpc_url>
 ETHERSCAN_API_KEY=<your_etherscan_api_key>
 ```
 
-Then run the deployment scripts:
+Foundry does not auto-read `.env` files -- source it in the shell first, then run commands:
 
 ```bash
+# Source .env to load PRIVATE_KEY, SEPOLIA_RPC_URL, and ETHERSCAN_API_KEY into the shell
+source .env
+
 # Deploy individual contracts
-forge script script/DeployCharity.s.sol --rpc-url sepolia --broadcast --verify
+source .env && forge script script/DeployCharity.s.sol --rpc-url sepolia --broadcast --verify
+source .env && forge script script/DeployCertificate.s.sol --rpc-url sepolia --broadcast --verify
+source .env && forge script script/DeployToken.s.sol --rpc-url sepolia --broadcast --verify
 
-# Deploy the full platform (Charity + Voting + Token)
-forge script script/DeployPlatform.s.sol --rpc-url sepolia --broadcast --verify
-
-# Deploy only the Token Factory
-forge script script/DeployToken.s.sol --rpc-url sepolia --broadcast --verify
+# Deploy the full platform (all contracts)
+source .env && forge script script/DeployPlatform.s.sol --rpc-url sepolia --broadcast --verify
 ```
 
 ### Frontend
@@ -127,13 +137,21 @@ npm run dev
 
 The app runs at `http://localhost:3000`. Connect your wallet to interact with the deployed contracts on Sepolia.
 
+The Certificate Registry requires a Pinata account for IPFS uploads. Create a `frontend/.env.local` file:
+
+```
+PINATA_JWT=<your_pinata_jwt_token>
+NEXT_PUBLIC_PINATA_GATEWAY_URL=https://gateway.pinata.cloud/ipfs
+```
+
 ## Tests
 
 Each project has its own test suite under `contracts/test/`:
 
 | Test File | Tests | Covers |
 |-----------|-------|--------|
-| CharityDonationTracker.t.sol | 10 | Campaign creation, donations, withdrawals, access control |
+| CharityDonationTracker.t.sol | 8 | Campaign creation, donations, withdrawals, access control |
+| CertificateRegistry.t.sol | 11 | Certificate issuance, sequential IDs, verification, access guards |
 | TokenFactory.t.sol | 8 | Token deployment, supply distribution, registry queries |
 | VotingPoll.t.sol | 8 | Poll lifecycle, voting, whitelisting, winner calculation |
 

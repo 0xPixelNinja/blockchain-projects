@@ -2,6 +2,7 @@
 export const VOTING_FACTORY_ADDRESS = "0x79EeD8c357b433583d7BecFC21670CDf37D60138" as const;
 export const CHARITY_ADDRESS = "0x22Ae8dfbf5852D85E60Ac35f64Eda9a5555933E2" as const;
 export const TOKEN_FACTORY_ADDRESS = "0x5389Eba86740c16e0f9C2897874b2c691Bfba7E9" as const;
+export const CERTIFICATE_ADDRESS = "0xa0d7D1c52492DFB299F3366d1B96A5dAAeB20a61" as const;
 
 export const VOTING_FACTORY_ABI = [
   {
@@ -577,5 +578,107 @@ export const TOKEN_TEMPLATE_ABI = [
     ],
     name: "Approval",
     type: "event",
+  },
+] as const;
+
+export const CERTIFICATE_ABI = [
+  {
+    inputs: [],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: "certId", type: "uint256" },
+      { indexed: false, name: "studentName", type: "string" },
+      { indexed: false, name: "ipfsHash", type: "string" },
+      { indexed: true, name: "issuer", type: "address" },
+    ],
+    name: "CertificateIssued",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "admin",
+    outputs: [{ name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "certificateCount",
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "START_ID",
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ name: "", type: "uint256" }],
+    name: "certificates",
+    outputs: [
+      { name: "id", type: "uint256" },
+      { name: "studentName", type: "string" },
+      { name: "ipfsHash", type: "string" },
+      { name: "issuer", type: "address" },
+      { name: "issuedAt", type: "uint256" },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { name: "_studentName", type: "string" },
+      { name: "_ipfsHash", type: "string" },
+    ],
+    name: "issueCertificate",
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ name: "_certId", type: "uint256" }],
+    name: "getCertificate",
+    outputs: [
+      {
+        components: [
+          { name: "id", type: "uint256" },
+          { name: "studentName", type: "string" },
+          { name: "ipfsHash", type: "string" },
+          { name: "issuer", type: "address" },
+          { name: "issuedAt", type: "uint256" },
+        ],
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ name: "_issuer", type: "address" }],
+    name: "getCertificatesByIssuer",
+    outputs: [{ name: "", type: "uint256[]" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ name: "_certId", type: "uint256" }],
+    name: "verifyCertificate",
+    outputs: [
+      { name: "exists", type: "bool" },
+      { name: "studentName", type: "string" },
+      { name: "ipfsHash", type: "string" },
+      { name: "issuer", type: "address" },
+      { name: "issuedAt", type: "uint256" },
+    ],
+    stateMutability: "view",
+    type: "function",
   },
 ] as const;
